@@ -21,7 +21,7 @@
     </style>
 </head>
 
-<body>
+<body style="padding-top: 100px;">
     <canvas id='canvas'>
         您的浏览器不支持canvas绘图！
     </canvas>

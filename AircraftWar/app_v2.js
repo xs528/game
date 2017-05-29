@@ -138,14 +138,21 @@ function Hero() {
     this.hCount = 0; // 用于控制子弹发射的频率
     this.eCount = 0; // 用于控制敌机出现的频率    
     this.n = 0;
+    this.life=0;
     this.draw = function() {
-        ctx.drawImage(heroImg[this.index], this.x, this.y);
-        ctx.fillText('SCORE:' + gameScore, 10, 30);
-        this.count++;
-        if (this.count % 3 == 0) { // 切换hero的图片
-            this.index = this.index == 0 ? 1 : 0;
+	    this.count++;
+        this.hit();
+        if(this.index>5){
+	    this.index=0;       
+	    } 
+        if (this.count % 3 == 0&&this.index<=1) { // 切换hero的图片
+          	this.index = this.index == 0 ? 1 : 0;
             this.count = 0;
         }
+        
+        ctx.drawImage(heroImg[this.index], this.x, this.y);
+        ctx.fillText('SCORE:' + gameScore, 10, 30);
+       
         this.hCount++;
         if (this.hCount % 3 == 0) { // 同时生成三颗子弹
             this.n == 32 && (this.n = 0); 
@@ -160,6 +167,27 @@ function Hero() {
         if (this.eCount % 8 == 0) { //生成敌机
             liveEnemy.push(new Enemy());
             this.eCount = 0;
+        }
+    }
+    this.hit = function() { //判断是自己是否被击中
+        for (var i = 0; i < liveEnemy.length; i++) {
+            var d = liveEnemy[i];
+            // 敌机与自己的碰撞检测
+            var px, py;  
+        	px = this.x <= d.x ? d.x : this.x;  
+        	py = this.y <= d.y ? d.y : this.y;  
+  
+        	// 判断点
+       		if (px >= this.x && px <= this.x + heroImg[0].width && py >= this.y && py <= this.y + heroImg[0].height && px >= d.x && px <= d.x + d.width && py >= d.y && py <= d.y + d.height) {  
+				this.life++;
+            	if(this.life>30){
+	            	if(this.index<=2){
+		            	this.index=3;
+	            	}
+					this.index++; 
+					this.life=0;
+	            } 
+        	} 
         }
     }
 

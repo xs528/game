@@ -116,13 +116,14 @@ function paintLogo() {
 }
 /*******************/
 function loading() {
-    index = 0;
+    this.index = 0;
 
     function loading() {
-        index % 1 == 0 && ctx.drawImage(gameLoad[index], 0, canvas.height - gameLoad[0].height);
-        index += 0.5;
-        if (index > 3) {
+        this.index % 1 == 0 && ctx.drawImage(gameLoad[index], 0, canvas.height - gameLoad[0].height);
+        this.index += 0.5;
+        if (this.index > 3) {
             curPhase = PHASE_PLAY;
+            this.index =0;
         }
     }
     return loading;
@@ -142,14 +143,15 @@ function Hero() {
     this.draw = function() {
 	    this.count++;
         this.hit();
-        if(this.index>5){
-	    this.index=0;       
+        if(this.index>4){
+	    curPhase =PHASE_GAMEOVER; 
+	    this.index=5;     
 	    } 
         if (this.count % 3 == 0&&this.index<=1) { // 切换hero的图片
           	this.index = this.index == 0 ? 1 : 0;
             this.count = 0;
         }
-        
+       
         ctx.drawImage(heroImg[this.index], this.x, this.y);
         ctx.fillText('SCORE:' + gameScore, 10, 30);
        
@@ -340,6 +342,14 @@ function drawEnemy() {
 function drawPause() {
     ctx.drawImage(pause, (width - pause.width) / 2, (height - pause.height) / 2);
 }
+//游戏结束
+function gameover(){
+	alert("游戏结束，成绩"+gameScore); 
+	gameScore=0;  
+	curPhase =PHASE_READY;  
+	hero = null;
+	hero = new Hero();  	    
+}
 /**********游戏主引擎*********/
 var pBg = paintBg();
 var load = loading();
@@ -363,6 +373,9 @@ function gameEngine() {
         case PHASE_PAUSE:
             drawPause();
             break;
+        case PHASE_GAMEOVER:
+            gameover();
+            break;    
     }
     //requestAnimationFrame(gameEngine);
 }
